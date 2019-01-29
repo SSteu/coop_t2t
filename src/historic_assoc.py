@@ -9,8 +9,12 @@ The bag data is plotted as usual.
 Association results are printed to the commandline, but can of course also be published to a new topic or handed over
 to a fusion centre that then performs T2TF with the resulting data
 
-Takes one optional argument: the name of the bag file in the data/ folder. if nothing is provided, the program idles 
-until rosbag play abc.bag is used to play another bag file.
+Takes three optional arguments: 
+1. the name of the bag file in the data/ folder. if nothing is provided, the program idles until "rosbag play abc.bag" 
+is used to play another bag file.
+2. the start time in seconds
+3. the play rate (0.5 to halve play rate)
+
 See README.txt for more information about directory structure.
 EXAMPLE CALL:
 rosrun coop_t2t historic_assoc.py mavenNew_small.bag
@@ -135,7 +139,8 @@ def callback_tracking(data):
             ids = []  # this list will hold lists where each entry is an object id in a cluster
             if not do_visual_plot:
                 # Simple print if no visual plot was done to indicate if the program is still running
-                print("[Number of clusters: "+str(len(assoc))+" ]")
+                # print("[Number of clusters: "+str(len(assoc))+" ]")  # disabled for now
+                pass  # disabled this for now, since rviz provides more information
             for a in assoc:  # get a list of all associations
                 temp = []  # stores ids for one association
                 for box in a:  # all tracking boxes in the current association
@@ -425,9 +430,7 @@ def setup(args=None):
     # define a similarity function for t2ta
     # Init the similarity checker that provides the similarity function
     # 20 works safe, but leads to some wrong associations between c2x data and road boundaries in very few scenarios
-    # reduced it to 13 for now, but without doing extensive testing
-    t2ta_thresh = 13  # Threshold for using only position data
-    # t2ta_thresh = 25  # Threshold for using position + velocity data
+    t2ta_thresh = 20  # Threshold for using only position data
 
     # value that is multiplied with velocity to acquire the position of the c2x objects in "untracked" time steps
     # i.e. between messages (since the frequency of the messages is lacking)
@@ -449,14 +452,17 @@ def setup(args=None):
     # (Bounding box data is not transformed, so the sizes will be correct but the rotation might be off)
 
     global play_rate, start_time
-    play_rate = 0.5
-    start_time = 0
+    if args is None:  # if no args were passed use sys.argv instead
+        args = sys.argv
 
-    # Check which arguments should be used (parameter if possible, else sys.argv)
-    if args is None:
-        listener(sys.argv)
-    else:
-        listener(args)
+    start_time = 0
+    if len(args) > 2:
+        start_time = float(args[2])
+    play_rate = 0.5
+    if len(args) > 3:
+        play_rate = float(args[3])
+
+    listener(args)
 
 
 if __name__ == '__main__':
