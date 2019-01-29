@@ -10,11 +10,13 @@
 
 # Executable files:
 	historic_assoc.py:
-		[... PARAMS]
+		Parameter 1: OPTIONAL : filename of the rosbag in the data/ folder that should be played
 	manual_RA_match.py:
-		[... PARAMS]
+		Parameter 1: OPTIONAL : Start time in seconds
+        Parameter 2: OPTIONAL : Play rate of ros bags (ex: 0.5 to halve playing speed)
 	sim_RMSE.py:
-		[... PARAMS]
+		Parameter 1: DEFAULT=2 : base standard deviation used for the measurements
+		Parameter 2: DEFAULT=0 : value that is added to the standard deviation for every subsequent sensor
 
 # Workspace setup:
 	Source files are in the ./src folder. Main files are in ./src, other 

@@ -8,8 +8,12 @@ there into the fixed frame ibeo_front_center of the fascare car.
 
 Afterwards, the data is associated, and results are printed.
 
-This does not take any parameters, so it can simply be started using
-rosrun coop_t2t manual_RA_match.py
+This does not need any parameters, so it can simply be started using
+    rosrun coop_t2t manual_RA_match.py
+
+Optionally, the start time and the play rate can be given as parameters:
+    rosrun coop_t2t manual_RA_match.py 252 0.5
+This would start the bags at time=252secs and halve the speed at which they are played.
 
 ---
 Note regarding global variable use:
@@ -466,8 +470,12 @@ def setup():
     """
     # VARIABLE DEFINITIONS
     global start_time, play_rate, t2ta_thresh, hist_size, state_space, use_identity, do_ego_plot, do_assoc, velo_threshold, do_velo_cut
-    start_time = 222    # max is ~449.386
+    start_time = 252    # max is ~449.386
+    if len(sys.argv) > 1:
+        start_time = float(sys.argv[1])
     play_rate = 1
+    if len(sys.argv) > 2:
+        play_rate = float(sys.argv[2])
     t2ta_thresh = 50
     hist_size = rospy.Duration(0)
     state_space = (True, False, False, False)
